@@ -1,0 +1,4 @@
+hammer 10
+nails 3
+screwdriver 12
+wrench 5

@@ -1,0 +1,4 @@
+John Smith hammer 2 screwdriver 3
+Amy Cage nails 3
+Steven Cho wrench 4 screwdriver 1 nails 4
+Stacy Jackson hammer 1 wrench 2 nails 10
