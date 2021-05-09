@@ -1,0 +1,292 @@
+Binary Search Trees: 
+
+
+Advantages: 
+
+1. searching is very efficient, because we get a hint at each step about which sub-tree contains 
+
+desired element. 
+
+2. Its an efficient data structure compared to arrays and linked lists. Searching removes half sub-tree at 
+
+every step. Making it take O(log n) time. Worst case however it takes O(n)
+
+3. Insertion and deletion is faster than arrays or linked lists. 
+
+Setting up a tree from a list of elements like an int: 
+
+Default starting from the root if the next element is less than the root it is placed to the left. 
+
+If the element is greater than the root it is placed to the right. And so on for each element until all elements 
+
+are placed in the tree. 
+
+
+Creating an implementation of a search tree is not built off an existing data structure like an arraylist 
+
+or linkedlist etc. You create your own implementation but for the most part the constructer, insertion and 
+
+deletion of nodes has been established. WOuld only need to create unique methods when its required for the 
+
+specific purpose of whatever is being worked on. 
+
+
+Guide from Tutorial online: 
+
+First define a Node class which has 3 attributes: data, left and right. 
+
+Where left represents the left child of the node and right represents the right child of the node. 
+
+When a new node is made at first data will be put into data, and left and right will point to null. 
+
+Then define another class that has a root attribute. which ofc represents root node of tree and is set to null 
+
+at first. 
+
+Insert(): 
+
+First it will check if the root is null, which means the tree is empty. So the new node becomes the root and will 
+
+stay the root until otherwise. 
+
+Then if it is not empty it compares the data to see if it is less than or greater than the root and places it 
+
+in the correct position. 
+
+
+delete(): 
+
+To delete a particular node it will check the value of the data to delete and see if its greater or less than the 
+
+value of the root data. Which afterwards will go down that specific sub-tree path. 
+
+If the node is found and has no children it is just set to null with no issues. 
+
+If there is 1 child node, the child node will take the position of the node being deleted. 
+
+Otherwise if there are 2 children, find the smallest value of the two children and the smallest will replace 
+
+the node being deleted. 
+
+
+Example implementation: 
+
+public class BinarySearchTree {
+
+	//Represents a node of binary tree
+	public static class Node {
+		int data;
+		Node left;
+		Node right;
+		
+		//actual node constructor. 
+		public Node(int data) {
+			this.data = data;
+			this.left = null;
+			this.right = null; 
+		}
+	}
+	
+	//root of the tree 
+	public Node root;
+	
+	public BinarySearchTree() {
+		root = null;
+	}
+	
+	//adds node to tree 
+	public void insert(int data) {
+		//first creating new node 
+		Node newNode = new Node(data);
+		
+		//checking if tree is empty 
+		if(root == null) {
+			root = newNode;
+			return;
+		} else {
+			//otherwise has current node point to the root.
+			Node current = root, parent = null;
+			
+			while(true) {
+				//parent keeps track of parent node of current node. 
+				parent = current;
+				
+				//if data is less than current's data, node will be inserted to left of tree. 
+				if(data < current.data) {
+					current = current.left;
+					if(current == null) {
+						parent.left = newNode;
+						return;
+					}
+				} else {
+					//if data is greater than current's data, node will be inserted to right of tree. 
+					
+					current = current.right;
+					if(current == null) {
+						parent.right = newNode;
+						return; 
+					}
+				}
+			}
+		}
+	}
+	
+	//finding minimumNode 
+	public Node minNode(Node root) {
+		if(root.left != null) 
+			return minNode(root.left);
+		else 
+			return root;
+	}
+	
+	//find maxNode 
+	public Node maxNode(Node root) {
+		if(root.right != null) 
+			return maxNode(root.right);
+		else 
+			return root;
+	}
+	
+	//deleteNode() will delete given node in tree 
+	publicc Node deleteNode(Node node, int value) {
+		if(node == null) {
+			return null;
+		} else {
+			//check the left sub-tree if value is less than node's data 
+			if(value < node.data) 
+				node.left = deleteNode(node.left, value);
+			else if(value > node.data) 
+				//checks the right sub-tree if value is greater than node's data. 
+				node.right = deleteNode(node.right, value);
+			else {
+				//this else if when we found the node to delete. 
+				
+				//if node to be deleted has no child, just set node to null 
+				if(node.left == null && node.right == null) 
+					node = null;
+				else if(node.left == null) {
+					node = node.right;
+					//this else if is if has a right child 
+				} else if (node.right == null) {
+					node = node.left;
+					
+					//this checks if it has a left child 
+				} else {
+					//if it has two children it finds the minimum btwn them 
+					
+					//finds min from right subtree 
+					Node temp = minNode(node.right);
+					
+					//exchanges the data btwn node and temp 
+					node.data = temp.data; 
+					
+					//deletes the node duplicate node from right subtree 
+					node.right = deleteNode(node.right, temp.data);
+					
+					//this is a recursive call b/c it has to check for children of that node and keep 
+					//replacing and going until it hits null 
+				}
+			}
+			return node;
+		}
+	}
+	
+	//this method recursively goes through the nodes starting with the root. 
+	//This method will go through the left subtree first until it hits a null at some point then 
+	//prints out the data. 
+	//Then it will go through all of the right subtree.
+	public void inorderTraversal(Node node) {
+		//always have to check if the tree is empty 
+		
+		if(root == null) {
+			System.out.println("Tree is empty");
+			return;
+		} else {
+			if(node.left != null) 
+				inorderTraversal(node.left);
+			System.out.print(node.data + " ");
+			
+			if(node.right != null) 
+				inorderTraversal(node.right);
+		}
+	}
+	
+	
+}
+
+//bad paint diagram in directory to make sure thigns are understood
+//inserting the values [50, 30, 70, 10, 60, 90] 
+
+//For traversing. 
+
+It checks to see if the root is empty it is not because its 50. 
+
+So then it checks is the left of 50 null, no so it recursively calls the traversal method 
+
+on the node to the left of 50 (the root) 
+
+Then it checks the left of that node which is 30. It is also not null so it calls the method again 
+
+on the node which has the value 10. Then it checks and sees the left of 10 is null. 
+
+So it prints out 10 then checks the right of 10 which is null, so it goes back up to its parent 30. 
+
+30 gets printed and the right of it is check which shows null which means it goes back to the root. 
+
+50 is then printed before t he right of it is checked. Right is not null so it calls the method on 70. 
+
+70 Then checks the left of it and sees 60 and calls again on 60. 60 sees that its left is empty so it 
+
+prints 60. Then it checks to the left of itself and sees its null and goes back to its parent 70. 
+
+70 gets printed and then its right is checked. The method is called again recursievely on 90. 
+
+90's left is null so it goes back and prints 90 and its right is null so its done. 
+
+So when the  tree is full an inorder traversal would print out: 
+
+[10, 30, 50, 60, 70, 90]
+
+
+//Post order version recursively 
+
+public void postOrder(Node node) {
+	if(node != null) {
+		postOrder(node.left);
+		postOrder(node.right);
+		System.out.println(node.data);
+	}
+}
+
+In post order the tree used in the example would print like: 
+
+It goes through the left subtree first. 
+
+It goes down until it hits left and right nulls. 
+
+it prints 10 first. 
+
+Then it goes back and checks the right of 30 which is seen as null so it goes back and prints 30. 
+
+So far it printed: [10, 30]
+
+Then it goes back to the root and checks the right subtree. 
+
+It looks at 70 and checks the left subtree of it. 
+
+It then checks and sees 60's children. Both of which are null so it prints 60 
+
+So far: [10, 30, 60]
+
+Then it checks the right subtree of 70. It finds 90 and proceeds to check the children of 90. 
+
+Both of them are null so it just goes back and prints out 90. 
+
+So far: [10, 30, 60, 90]
+
+Then it prints out 70 since both subtrees of the node 70 were all checked. 
+
+Then it goes back to the root which is finally printed after all of its subtrees were checked. 
+
+So the final print in postorder would be: [10, 30, 60, 90, 70, 50]
+
